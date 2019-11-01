@@ -1,4 +1,6 @@
 //server.js
+// npm run start === Starts the server.
+
 const express = require('express');
 const favicon = require('express-favicon');
 const path = require('path');
@@ -26,8 +28,11 @@ app.get("/todo", async (req, res) => {
     console.log(error);
   }
 })
-app.post(`http://localhost:3000/login`, (req, res) => {
-  res.send('POST request to the login page');
+app.post(`/signup`, (req, res) => {
+  // const {email, pass} = req.body;
+  // console.log;`${email} ${pass}`);
+    // res.send(`POST to signup`);
+    res.send('POSTED to /signup');
 })
 
 // knex('table').insert({a: 'b'}).returning('*').toString();

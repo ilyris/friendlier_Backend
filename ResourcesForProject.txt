@@ -1,0 +1,8 @@
+https://dev.to/easybuoy/setting-up-a-node-api-with-postgres-and-knex-588f   // Getting Knex set up with Node.JS
+https://kapeli.com/cheat_sheets/Axios.docset/Contents/Resources/Documents/index   // Axios HTTP methods.
+https://devhints.io/knex  // Knex cheatsheet
+
+
+
+// Server Gotchas.
+Make sure we JSON our data by using application middleware... For Example. app.use(express.json()); above any http methods.

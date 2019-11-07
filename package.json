@@ -1,14 +1,37 @@
-
 {
-    "name": "friendlier_backend",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-      "express": "^4.17.1",
-      "express-favicon": "^2.0.1",
-      "path": "^0.12.7"
-    },
-    "scripts": {
-      "start-server": "node ./server/server.js"
-    }
-  }
+  "name": "friendlier_backend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-favicon": "^2.0.1",
+    "knex": "^0.20.1",
+    "path": "^0.12.7",
+    "pg": "^7.12.1"
+  },
+  "scripts": {
+    "start": "nodemon ./api/server.js",
+    "migrate": "knex migrate:latest",
+    "unmigrate": "knex migrate:rollback",
+    "seed": "knex seed:run "
+  },
+  "main": "server.js",
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilyris/friendlier_Backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ilyris/friendlier_Backend/issues"
+  },
+  "homepage": "https://github.com/ilyris/friendlier_Backend#readme",
+  "description": ""
+}

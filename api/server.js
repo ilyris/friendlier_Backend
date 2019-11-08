@@ -4,6 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const server = express();
+const { hash } = require('bcrypt'); // bcrypt will encrypt passwords to be saved in db
 const { port } = require("../config/secrets.js");
 const { addUser } = require("./models/users.js");
 
@@ -28,7 +29,13 @@ server.get("/todo", async (req, res) => {
 server.use(express.json()); // use middleware to parse the request body to a JSON object so we can access the data.
 
 server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the /signup path from our Front-End serverlication
-  const newUser = req.body; // store the request body to the newUser varliable.
+  let { email, password } = req.body; // store the request body to the newUser varliable.
+  const hashedPassword = await hash(password, 10);
+  password = hashedPassword;
+  const newUser = {
+    email: email,
+    password: password
+  }
   try { // try the code below and exectue if the req comes back good.
     await addUser(newUser);
     res.sendStatus(201);

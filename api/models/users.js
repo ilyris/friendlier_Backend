@@ -7,9 +7,10 @@ const addUser = async ( newUser) => {
     .insert(newUser);
 }
 
+const findUsersBy = filter => db("users").where(filter);
 module.exports = {
     addUser,
-    // hashPassword
+    findUsersBy,
 }
 
 

@@ -4,9 +4,10 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const server = express();
-const { hash } = require('bcrypt'); // bcrypt will encrypt passwords to be saved in db
+const { hashSync, compareSync } = require('bcryptjs'); // bcrypt will encrypt passwords to be saved in db
+const {Unauthorized, InternalServerError} = require("http-errors");
 const { port } = require("../config/secrets.js");
-const { addUser } = require("./models/users.js");
+const { addUser, findUsersBy } = require("./models/users.js");
 
 // the __dirname is the current directory from where the script is running
 server.use(express.static(__dirname));
@@ -30,7 +31,7 @@ server.use(express.json()); // use middleware to parse the request body to a JSO
 
 server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the /signup path from our Front-End serverlication
   let { email, password } = req.body; // store the request body to the newUser varliable.
-  const hashedPassword = await hash(password, 10);
+  const hashedPassword = await hashSync(password, 14);
   password = hashedPassword;
   const newUser = {
     email: email,
@@ -43,5 +44,35 @@ server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the 
     next(error);
   }
 });
+
+server.post(`/login`,  async (req, res, next) => {
+  let {email, password} = req.body;
+
+  try {
+    const user =  await findUsersBy({ email }).first(); // Search database for first user with the email from the req body.
+    const error401 = Unauthorized('Incorrect credentials');
+    const isCorrectPassword = await compareSync(password, user.password); // compare the req password with the returned user pass from db.
+    // const userId = user.id;
+    // res.json({
+    //   userId,
+    //   isDefaultPassword
+    // });
+
+    if(email !== user.email || !isCorrectPassword)  { // check if we have the right email or password
+      console.log('email or password was invalid.');
+      res.sendStatus(401);
+    } else if(email === undefined || password === undefined) { // check if the email or password are even in the database
+      console.log('creds were bogus');
+      res.sendStatus(401);
+    } else if(email === user.email && isCorrectPassword) { // email and password match to a user in the database.
+      console.log('Lets go!');
+      res.sendStatus(200);
+    }
+
+
+  } catch (error) {
+    next(error);
+  }
+})
 
 server.listen(port);

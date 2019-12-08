@@ -2,6 +2,8 @@
 exports.up = knex =>
 knex.schema.createTable("profile_information", tbl => {
   tbl.increments();
+  tbl.string("email", 128).notNullable().unique();
+  tbl.specificType('interests', 'text ARRAY').notNullable();
   tbl.string("firstName", 128).notNullable();
   tbl.string("lastName", 128).notNullable();
   tbl.string("tagLine", 128).notNullable();

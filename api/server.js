@@ -38,24 +38,30 @@ server.post("/profile", async (req, res, next) => {
 
 server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the /signup path from our Front-End serverlication
   let { email, password } = req.body; // store the request body to the newUser varliable.
-  const hashedPassword = await hashSync(password, 14);
-  password = hashedPassword;
-  const newUser = {
-    email: email,
-    password: password
-  }
   try { // try the code below and exectue if the req comes back good.
-    await addUser(newUser);
-    console.log('user has been created');
-    res.sendStatus(201);
+    if(password.length >= 8 && email.length >= 12 ) {
+      const hashedPassword = await hashSync(password, 14);
+      password = hashedPassword;
+      const newUser = {
+        email: email,
+        password: password
+      }
+      await addUser(newUser);
+      console.log('user has been created');
+      res.sendStatus(201);
+    } else {
+      console.log('User was not created');
+      res.sendStatus(401);
+    }
   } catch (error) {    // if the code above fails in the try, run the code in the catch block.
-    next(error);
+    next('There was an error' + error);
   }
 });
 
+
 server.post('/signup/add-profile', async (request, response, next) => {
 let {email, interests,} = request.body.profileObject;
-let {firstName, lastName, tagLine, education, region, zipCode, state} = request.body.profileObject.profileInformation;
+let {firstName, lastName, tagLine, education, region, city, state} = request.body.profileObject.profileInformation;
 
 const reconstructedUserProfileInformation = {
   email: email,
@@ -65,7 +71,7 @@ const reconstructedUserProfileInformation = {
   tagLine: tagLine,
   education: education,
   region: region,
-  zipCode: zipCode,
+  city: city,
   state: state
 }
   try {
@@ -76,11 +82,11 @@ const reconstructedUserProfileInformation = {
     next(error);
   }
 })
+
 server.post(`/login`,  async (req, res, next) => {
   let {email, password} = req.body;
   try {
     const user =  await findUsersBy({ email }).first(); // Search database for first user with the email from the req body.
-    const error401 = Unauthorized('Incorrect credentials');
     const isCorrectPassword = await compareSync(password, user.password); // compare the req password with the returned user pass from db.
     // const userId = user.id;
     // res.json({

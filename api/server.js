@@ -99,7 +99,7 @@ server.post(`/login`,  async (req, res, next) => {
     } else if(email === user.email && isCorrectPassword) { // email and password match to a user in the database.
       // Create jwt token
       const token = generateToken(user);  
-      // res.header({'auth-token': token}).sendStatus(200) // Add the token to the header
+      // Server responds with the token in JSON format
       res.json({token});
       console.log('Success');
 
@@ -123,13 +123,13 @@ function generateToken(user) {
 function authenticateToken(req, res, next) {
   // create a variable for the token from the clients request.
   const token = req.headers.authorization
-  console.log(token);
   // if token is false, return a 401.
   if(!token) return res.status(422).send('Access Denied');
 
   try{
     // Verify the JWT that we have to the clients JWT
     const verified = jwt.verify(token, process.env.JWT_SECRET);
+    // store the verified payload to the user object in the locals object.
     res.locals.user = verified;
     next();
   }catch (error) {

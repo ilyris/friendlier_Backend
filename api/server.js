@@ -1,6 +1,7 @@
 
 //server.js
 // npm run start === Starts the server.
+console.log("we're up and running");
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
@@ -22,17 +23,19 @@ server.use((req, res, next) => {
 
 server.use(express.json()); // use middleware to parse the request body to a JSON object so we can access the data.
 
-server.post("/profile", async (req, res, next) => {
-  console.log(req.body.emailAddr);
-  const {emailAddr} = req.body;
+server.post("/profile", authenticateToken, async (req, res, next) => {
+  // Deconstruct emailAddr from user
+  const {emailAddr} = res.locals.user;
   try {
+    // Make a SQL request on the column 'email' with the value in the variable 'emailAddr'
   const usersProfileData = await findProfileInformation({email: emailAddr });
+  // Json the object we get back.
     res.json({ usersProfileData });
   } catch (error) {
     console.log(error);
     next(error);
   }
-});
+}); 
 
 
 server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the /signup path from our Front-End serverlication
@@ -53,7 +56,7 @@ server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the 
       res.sendStatus(401);
     }
   } catch (error) {    // if the code above fails in the try, run the code in the catch block.
-    next('There was an error' + error);
+    next('There was an error ' + error);
   }
 });
 
@@ -94,11 +97,12 @@ server.post(`/login`,  async (req, res, next) => {
       console.log('creds were bogus');
       res.sendStatus(401);
     } else if(email === user.email && isCorrectPassword) { // email and password match to a user in the database.
+      // Create jwt token
       const token = generateToken(user);  
+      // res.header({'auth-token': token}).sendStatus(200) // Add the token to the header
+      res.json({token});
       console.log('Success');
-      
-      res.header({token});
-      res.sendStatus(200);
+
     }
   } catch (error) {
     next(error);
@@ -107,12 +111,30 @@ server.post(`/login`,  async (req, res, next) => {
 
 function generateToken(user) {
   const payload = {
-    subject: user.email, // sub
+    emailAddr: user.email, // sub
   }
   const options = {
     expiresIn: '24h',
   }
-  return jwt.sign(payload, secret, options)
+  return jwt.sign(payload, secret, options);
+}
+
+// Middleware function
+function authenticateToken(req, res, next) {
+  // create a variable for the token from the clients request.
+  const token = req.headers.authorization
+  console.log(token);
+  // if token is false, return a 401.
+  if(!token) return res.status(422).send('Access Denied');
+
+  try{
+    // Verify the JWT that we have to the clients JWT
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    res.locals.user = verified;
+    next();
+  }catch (error) {
+    res.status(401).json(error).send('Invalid Token');
+  }
 }
 
 server.listen(port);

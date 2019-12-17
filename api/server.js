@@ -1,14 +1,13 @@
 
-let response;
-let request;
 //server.js
 // npm run start === Starts the server.
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const server = express();
+const jwt = require('jsonwebtoken');
 const { hashSync, compareSync } = require('bcryptjs'); // bcrypt will encrypt passwords to be saved in db
-const { port } = require("../config/secrets.js");
+const { port, secret } = require("../config/secrets.js");
 const { addUser, findUsersBy, addUserProfile, findProfileInformation } = require("./models/users.js"); 
 
 // the __dirname is the current directory from where the script is running
@@ -60,7 +59,7 @@ server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the 
 
 
 server.post('/signup/add-profile', async (request, response, next) => {
-let {email, interests,} = request.body.profileObject;
+let {email, interests} = request.body.profileObject;
 let {firstName, lastName, tagLine, education, region, city, state} = request.body.profileObject.profileInformation;
 
 const reconstructedUserProfileInformation = {
@@ -86,14 +85,8 @@ const reconstructedUserProfileInformation = {
 server.post(`/login`,  async (req, res, next) => {
   let {email, password} = req.body;
   try {
-    const user =  await findUsersBy({ email }).first(); // Search database for first user with the email from the req body.
+    const user = await findUsersBy({ email }).first(); // Search database for first user with the email from the req body.
     const isCorrectPassword = await compareSync(password, user.password); // compare the req password with the returned user pass from db.
-    // const userId = user.id;
-    // res.json({
-    //   userId,
-    //   isDefaultPassword
-    // });
-
     if(email !== user.email || !isCorrectPassword)  { // check if we have the right email or password
       console.log('email or password was invalid.');
       res.sendStatus(401);
@@ -101,14 +94,25 @@ server.post(`/login`,  async (req, res, next) => {
       console.log('creds were bogus');
       res.sendStatus(401);
     } else if(email === user.email && isCorrectPassword) { // email and password match to a user in the database.
-      console.log('Lets go!');
+      const token = generateToken(user);  
+      console.log('Success');
+      
+      res.header({token});
       res.sendStatus(200);
     }
-
-
   } catch (error) {
     next(error);
   }
 })
+
+function generateToken(user) {
+  const payload = {
+    subject: user.email, // sub
+  }
+  const options = {
+    expiresIn: '24h',
+  }
+  return jwt.sign(payload, secret, options)
+}
 
 server.listen(port);

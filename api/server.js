@@ -9,7 +9,7 @@ const server = express();
 const jwt = require('jsonwebtoken');
 const { hashSync, compareSync } = require('bcryptjs'); // bcrypt will encrypt passwords to be saved in db
 const { port, secret } = require("../config/secrets.js");
-const { addUser, findUsersBy, addUserProfile, findProfileInformation } = require("./models/users.js"); 
+const { addUser, findUsersBy, addUserProfile, findProfileInformation, findSearchedUsers } = require("./models/users.js"); 
 
 // the __dirname is the current directory from where the script is running
 server.use(express.static(__dirname));
@@ -37,6 +37,22 @@ server.post("/profile", authenticateToken, async (req, res, next) => {
   }
 }); 
 
+server.post("/search", authenticateToken, async (req, res, next) => {
+  const {emailAddr} = res.locals.user
+  const {searchInput} = req.body;
+  if(emailAddr && searchInput) {
+    try {
+      // Make a SQL request on the column 'email' with the value in the variable 'emailAddr'
+      const matchedUsersData = await findSearchedUsers(searchInput);
+      const matchedRows = matchedUsersData.rows;
+      // Json the object we get back.
+      res.json({ matchedRows });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+  }
+}); 
 
 server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the /signup path from our Front-End serverlication
   let { email, password } = req.body; // store the request body to the newUser varliable.
@@ -100,7 +116,8 @@ server.post(`/login`,  async (req, res, next) => {
       // Create jwt token
       const token = generateToken(user);  
       // Server responds with the token in JSON format
-      res.json({token});
+      
+      res.json({token})
       console.log('Success');
 
     }

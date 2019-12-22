@@ -1,6 +1,5 @@
 const db = require("../../data/db"); 
 
-
 const addUser = async ( newUser) => {
     return db('users')
     // Pass in the whole object into the insert statement.
@@ -14,12 +13,15 @@ const findUsersBy = filter => db("users").where(filter);
 
 const findProfileInformation = (filter) => {
     return db("profile_information").where(filter);
-} ;
+}
+
+const findSearchedUsers = (filter) => {
+    return db.raw(`SELECT * FROM profile_information WHERE ? = ANY (interests)`, [filter]);
+}
 module.exports = {
     addUser,
     addUserProfile,
     findUsersBy,
     findProfileInformation,
+    findSearchedUsers
 }
-
-

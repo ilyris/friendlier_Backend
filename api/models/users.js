@@ -16,7 +16,15 @@ const findProfileInformation = (filter) => {
 }
 
 const findSearchedUsers = (filter) => {
-    return db.raw(`SELECT * FROM profile_information WHERE ? = ANY (interests)`, [filter]);
+    if (!filter.length) {
+        console.log('attempt to clear query');
+        // return a empty row to clear the search page.
+        return db.select("*").from('profile_information').where(1 != 2);
+    } else if(filter.length) {
+        console.log('we tried to grab users');
+        // return users with at least one interest.
+        return db.raw(`select * from profile_information where interests @> ?::text[]`, [filter]);
+    }
 }
 module.exports = {
     addUser,

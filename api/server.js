@@ -3,6 +3,7 @@
 // npm run start === Starts the server.
 console.log("we're up and running");
 require("dotenv").config();
+const {interestsArray} = require('./interestData.js');
 const express = require("express");
 const path = require("path");
 const server = express();
@@ -38,12 +39,21 @@ server.post("/profile", authenticateToken, async (req, res, next) => {
 }); 
 
 server.post("/search", authenticateToken, async (req, res, next) => {
-  const {emailAddr} = res.locals.user
   const {searchInput} = req.body;
-  if(emailAddr && searchInput) {
+
+  // Split the input to create an array.
+  const toArraySearchInput = searchInput.split(" ");
+  // loop through the interests and all special characters. This regex was found here 
+  // https://stackoverflow.com/questions/4374822/remove-all-special-characters-with-regexp
+  const cleanCommaString = toArraySearchInput.map( splitInterests =>  splitInterests.replace(/[^\w\s]/g, ''));
+  // compare our interestData array to our cleanCommaString
+  const comparedAndFilteredInterests = interestsArray.filter(element => cleanCommaString.includes(element));
+  // check that our filtered search results has NO matching interests.
+  if(comparedAndFilteredInterests.length <= 0) console.log('no search query matched');
+
     try {
-      // Make a SQL request on the column 'email' with the value in the variable 'emailAddr'
-      const matchedUsersData = await findSearchedUsers(searchInput);
+      // Make a SQL request on the column 'interests' column.
+      const matchedUsersData = await findSearchedUsers(comparedAndFilteredInterests);
       const matchedRows = matchedUsersData.rows;
       // Json the object we get back.
       res.json({ matchedRows });
@@ -51,7 +61,6 @@ server.post("/search", authenticateToken, async (req, res, next) => {
         console.log(error);
         next(error);
     }
-  }
 }); 
 
 server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the /signup path from our Front-End serverlication

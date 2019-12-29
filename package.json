@@ -15,7 +15,8 @@
     "pg": "^7.12.1"
   },
   "scripts": {
-    "start": "nodemon ./api/server.js",
+    "start": "node ./api/server.js",
+    "dev-start": "nodemon ./api/server.js",
     "migrate": "knex migrate:latest",
     "unmigrate": "knex migrate:rollback",
     "seed": "knex seed:run "

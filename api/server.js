@@ -23,7 +23,14 @@ server.use((req, res, next) => {
 
 
 server.use(express.json()); // use middleware to parse the request body to a JSON object so we can access the data.
-
+server.post("/", async (req, res, next) => {
+  // Deconstruct emailAddr from user
+  try {
+    console.log('The homepage application was hit')
+  } catch (error) {
+    res.status(404).json(error).send('root is not working');
+  }
+}); 
 server.post("/profile", authenticateToken, async (req, res, next) => {
   // Deconstruct emailAddr from user
   const {emailAddr} = res.locals.user;

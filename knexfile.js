@@ -1,4 +1,4 @@
-require('dotenv').config({path: './.env'});
+require('dotenv').config();
 
 
 module.exports = {
@@ -29,7 +29,6 @@ module.exports = {
       min: 2,
       max: 10
     },
-    useNullAsDefault: true,
     migrations: {
       directory: './data/migrations',
       tableName: 'knex_migrations'

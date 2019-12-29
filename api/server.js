@@ -43,20 +43,24 @@ server.post("/search", authenticateToken, async (req, res, next) => {
   const {selectedTags} = req.body;
   // Split the input to create an array.
   // const toArraySearchInput = mergedInput.split(" ");
-  // loop through the interests and all special characters. This regex was found here 
-  // https://stackoverflow.com/questions/4374822/remove-all-special-characters-with-regexp
-  const cleanArray = selectedTags.map( splitInterests =>  splitInterests.replace(/[^\w\s]/g, ''));
-  // compare our interestData array to our cleanCommaString
-  const comparedAndFilteredInterests = interestsArray.filter(element => cleanArray.includes(element));
-  // check that our filtered search results has NO matching interests.
-  if(comparedAndFilteredInterests.length <= 0) console.log('no search query matched');
-
+  console.log(selectedTags);
     try {
-      // Make a SQL request on the column 'interests' column.
-      const matchedUsersData = await findSearchedUsers(comparedAndFilteredInterests);
-      const matchedRows = matchedUsersData.rows;
-      // Json the object we get back.
-      res.json({ matchedRows });
+        // loop through the interests and all special characters. This regex was found here 
+  // https://stackoverflow.com/questions/4374822/remove-all-special-characters-with-regexp
+  if(!selectedTags) {
+    console.log('There was no interests selected');
+  } else if(selectedTags) {
+    const cleanArray = selectedTags.map( splitInterests =>  splitInterests.replace(/[^\w\s]/g, ''));
+    // compare our interestData array to our cleanCommaString
+    const comparedAndFilteredInterests = interestsArray.filter(element => cleanArray.includes(element));
+    // check that our filtered search results has NO matching interests.
+    if(comparedAndFilteredInterests.length <= 0) console.log('no search query matched');
+        // Make a SQL request on the column 'interests' column.
+        const matchedUsersData = await findSearchedUsers(comparedAndFilteredInterests);
+        const matchedRows = matchedUsersData.rows;
+        // Json the object we get back.
+        res.json({ matchedRows });
+  }
     } catch (error) {
         console.log(error);
         next(error);
@@ -159,6 +163,7 @@ function authenticateToken(req, res, next) {
     res.locals.user = verified;
     next();
   }catch (error) {
+    jwt.destroy(token);
     res.status(401).json(error).send('Invalid Token');
   }
 }

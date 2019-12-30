@@ -75,7 +75,6 @@ try {
 }); 
 
 server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the /signup path from our Front-End serverlication
-  console.log('hello');
   try { // try the code below and exectue if the req comes back good.
     let { email, password } = req.body; // store the request body to the newUser varliable.
     console.log(email, password);
@@ -94,7 +93,6 @@ server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the 
       res.sendStatus(401);
     }
   } catch (error) {    // if the code above fails in the try, run the code in the catch block.
-    res.send('Sorry, Nothing is here for you at this moment');
     next('There was an error ' + error);
   }
 });
@@ -117,7 +115,6 @@ const reconstructedUserProfileInformation = {
 }
   try {
     await addUserProfile(reconstructedUserProfileInformation);
-    console.log(request.body.profileObject);
     response.sendStatus(201);
   } catch(error) {
     next(error);
@@ -171,7 +168,6 @@ function authenticateToken(req, res, next) {
     // Verify the JWT that we have to the clients JWT
     const verified = jwt.verify(token, process.env.JWT_SECRET);
     // store the verified payload to the user object in the locals object.
-    console.log(verified);
     res.locals.user = verified;
     next();
   }catch (error) {

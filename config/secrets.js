@@ -5,6 +5,5 @@ const secret = process.env.JWT_SECRET || 'sdfgsdfgsd~!@`21123asdf~!@#';
 module.exports = {
     port,
     seedPWTest,
-    dbName,
     secret,
 };

@@ -69,7 +69,7 @@ try {
 }); 
 
 server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the /signup path from our Front-End serverlication
-
+  console.log('hello');
   try { // try the code below and exectue if the req comes back good.
     let { email, password } = req.body; // store the request body to the newUser varliable.
     console.log(email, password);

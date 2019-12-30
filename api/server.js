@@ -6,6 +6,7 @@ require("dotenv").config();
 const {interestsArray} = require('./interestData.js');
 const express = require("express");
 const path = require("path");
+const cors = require('cors')
 const server = express();
 const jwt = require('jsonwebtoken');
 const { hashSync, compareSync } = require('bcryptjs'); // bcrypt will encrypt passwords to be saved in db
@@ -16,10 +17,12 @@ const { addUser, findUsersBy, addUserProfile, findProfileInformation, findSearch
 server.use(express.static(__dirname));
 server.use(express.static(path.join(__dirname, "../build")));
 
-server.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  next();
-});
+// server.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   next();
+// });
+
+server.use(cors());
 
 
 server.use(express.json()); // use middleware to parse the request body to a JSON object so we can access the data.

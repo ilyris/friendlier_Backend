@@ -1,10 +1,9 @@
 require('dotenv').config();
 
-
 module.exports = {
   development: {
     client: 'pg',
-    connection: 'http://localhost:8080',
+    connection: 'postgres://postgres:Rammus652!@localhost:5432/postgres',
     migrations: {
       directory: './data/migrations',
     },
@@ -13,22 +12,9 @@ module.exports = {
     },
   },
 
-  testing: {
-    client: 'pg',
-    connection: process.env.DB_URL,
-    migrations: {
-      directory: './data/migrations',
-    },
-    seeds: { directory: './data/seeds/test' },
-  },
-
   production: {
     client: 'pg',
     connection: process.env.DB_URL,
-    pool: {
-      min: 2,
-      max: 10
-    },
     migrations: {
       directory: './data/migrations',
       tableName: 'knex_migrations'

@@ -88,6 +88,7 @@ server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the 
       res.sendStatus(401);
     }
   } catch (error) {    // if the code above fails in the try, run the code in the catch block.
+    res.send('Sorry, Nothing is here for you at this moment');
     next('There was an error ' + error);
   }
 });

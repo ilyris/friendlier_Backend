@@ -16,7 +16,6 @@ const { addUser, findUsersBy, addUserProfile, findProfileInformation, findSearch
 // the __dirname is the current directory from where the script is running
 server.use(express.static(__dirname));
 server.use(express.static(path.join(__dirname, "../build")));
-
 // server.use((req, res, next) => {
 //   res.header("Access-Control-Allow-Origin", "*");
 //   next();
@@ -166,7 +165,7 @@ function authenticateToken(req, res, next) {
 
   try{
     // Verify the JWT that we have to the clients JWT
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    const verified = jwt.verify(token, secret);
     // store the verified payload to the user object in the locals object.
     res.locals.user = verified;
     next();

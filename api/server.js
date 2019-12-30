@@ -69,8 +69,10 @@ try {
 }); 
 
 server.post(`/signup`, async (req, res, next) => {   // Listen to trafic on the /signup path from our Front-End serverlication
-  let { email, password } = req.body; // store the request body to the newUser varliable.
+
   try { // try the code below and exectue if the req comes back good.
+    let { email, password } = req.body; // store the request body to the newUser varliable.
+    console.log(email, password);
     if(password.length >= 8 && email.length >= 12 ) {
       const hashedPassword = await hashSync(password, 14);
       password = hashedPassword;

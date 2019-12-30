@@ -29,9 +29,12 @@ server.use(express.json()); // use middleware to parse the request body to a JSO
 server.get("/", (req, res) => {
   res.json({interestsArray});
 }); 
+
+
 server.post("/profile", authenticateToken, async (req, res, next) => {
   // Deconstruct emailAddr from user
   const {emailAddr} = res.locals.user;
+  console.log(emailAddr);
   try {
     // Make a SQL request on the column 'email' with the value in the variable 'emailAddr'
   const usersProfileData = await findProfileInformation({email: emailAddr });
@@ -166,6 +169,7 @@ function authenticateToken(req, res, next) {
 
   try{
     // Verify the JWT that we have to the clients JWT
+    console.log(token);
     const verified = jwt.verify(token, process.env.JWT_SECRET);
     // store the verified payload to the user object in the locals object.
     res.locals.user = verified;

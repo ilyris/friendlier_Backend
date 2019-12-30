@@ -24,12 +24,6 @@ server.use((req, res, next) => {
 
 server.use(express.json()); // use middleware to parse the request body to a JSON object so we can access the data.
 server.get("/", (req, res) => {
-  try {
-    res.send('Lets go!');
-
-  } catch(error) {
-    res.send(500).json({message: 'Cant get items from DB'});
-  }
   res.json({interestsArray});
 }); 
 server.post("/profile", authenticateToken, async (req, res, next) => {

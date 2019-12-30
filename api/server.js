@@ -169,9 +169,9 @@ function authenticateToken(req, res, next) {
 
   try{
     // Verify the JWT that we have to the clients JWT
-    console.log(token);
     const verified = jwt.verify(token, process.env.JWT_SECRET);
     // store the verified payload to the user object in the locals object.
+    console.log(verified);
     res.locals.user = verified;
     next();
   }catch (error) {

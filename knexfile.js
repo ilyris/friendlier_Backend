@@ -4,7 +4,7 @@ require('dotenv').config();
 module.exports = {
   development: {
     client: 'pg',
-    connection: 'http://localhost:3000/',
+    connection: 'http://localhost:8080',
     migrations: {
       directory: './data/migrations',
     },
@@ -15,7 +15,7 @@ module.exports = {
 
   testing: {
     client: 'pg',
-    connection: 'http://localhost:3000/',
+    connection: process.env.DB_URL,
     migrations: {
       directory: './data/migrations',
     },

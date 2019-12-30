@@ -25,8 +25,10 @@ server.use((req, res, next) => {
 server.use(express.json()); // use middleware to parse the request body to a JSON object so we can access the data.
 server.post("/", async (req, res, next) => {
   // Deconstruct emailAddr from user
+  console.log('root hit');
   try {
-    console.log('The homepage application was hit')
+    res.json({random: 'stuff'})
+    console.log('The homepage application was hit');
   } catch (error) {
     res.status(404).json(error).send('root is not working');
   }
@@ -123,6 +125,7 @@ const reconstructedUserProfileInformation = {
 
 server.post(`/login`,  async (req, res, next) => {
   let {email, password} = req.body;
+  console.log(email, password);
   try {
     const user = await findUsersBy({ email }).first(); // Search database for first user with the email from the req body.
     const isCorrectPassword = await compareSync(password, user.password); // compare the req password with the returned user pass from db.
@@ -170,7 +173,6 @@ function authenticateToken(req, res, next) {
     res.locals.user = verified;
     next();
   }catch (error) {
-    jwt.destroy(token);
     res.status(401).json(error).send('Invalid Token');
   }
 }

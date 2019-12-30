@@ -37,6 +37,7 @@ server.post("/profile", authenticateToken, async (req, res, next) => {
     res.json({ usersProfileData });
   } catch (error) {
     console.log(error);
+    res.send(500).json({message: 'Cant get items from DB'});
     next(error);
   }
 }); 

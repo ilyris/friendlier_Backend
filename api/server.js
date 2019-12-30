@@ -52,7 +52,15 @@ server.post("/search", authenticateToken, async (req, res, next) => {
   const {selectedTags} = req.body;
   // Split the input to create an array.
   // const toArraySearchInput = mergedInput.split(" ");
-  console.log(selectedTags);
+  // loop through the interests and all special characters. This regex was found here 
+  // https://stackoverflow.com/questions/4374822/remove-all-special-characters-with-regexp
+  
+  const cleanArray = selectedTags.map( splitInterests =>  splitInterests.replace(/[^\w\s]/g, ''));
+  // compare our interestData array to our cleanCommaString
+  const comparedAndFilteredInterests = interestsArray.filter(element => cleanArray.includes(element));
+  // check that our filtered search results has NO matching interests.
+  if(comparedAndFilteredInterests.length <= 0) console.log('no search query matched');
+
     try {
         // loop through the interests and all special characters. This regex was found here 
   // https://stackoverflow.com/questions/4374822/remove-all-special-characters-with-regexp

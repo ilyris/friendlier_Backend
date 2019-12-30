@@ -24,7 +24,7 @@ server.use((req, res, next) => {
 
 server.use(express.json()); // use middleware to parse the request body to a JSON object so we can access the data.
 server.get("/", (req, res) => {
-  res.send('API running');
+  res.send('API running', interestsArray);
 }); 
 server.post("/profile", authenticateToken, async (req, res, next) => {
   // Deconstruct emailAddr from user

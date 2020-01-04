@@ -32,10 +32,9 @@ server.get("/", (req, res) => {
 
 server.get("/loggedInUser", authenticateToken, async (req, res, next) => {
   // Deconstruct emailAddr from user
-  console.log('Now I was hit!');
+  console.log('Grabbed Logged In User');
   const {emailAddr} = res.locals.user;
   // const {filter} = req.body
-  console.log('Now I was hit!');
   console.log(emailAddr)
   try {
     // Make a SQL request on the column 'email' with the value in the variable 'emailAddr'
@@ -51,7 +50,7 @@ server.get("/loggedInUser", authenticateToken, async (req, res, next) => {
 server.post("/profile/:id", authenticateToken, async (req, res, next) => {
   // Deconstruct emailAddr from user
   // console.log(req.params);
-  console.log('yeah, I was hit');
+  console.log('Grabbed Searched User Information');
   const {emailAddr} = res.locals.user;
   const {filter} = req.body
   console.log(emailAddr);

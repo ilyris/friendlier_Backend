@@ -30,21 +30,43 @@ server.get("/", (req, res) => {
 }); 
 
 
-server.post("/profile", authenticateToken, async (req, res, next) => {
+server.get("/loggedInUser", authenticateToken, async (req, res, next) => {
   // Deconstruct emailAddr from user
+  console.log('Now I was hit!');
   const {emailAddr} = res.locals.user;
-  console.log(emailAddr);
+  // const {filter} = req.body
+  console.log('Now I was hit!');
+  console.log(emailAddr)
   try {
     // Make a SQL request on the column 'email' with the value in the variable 'emailAddr'
-  const usersProfileData = await findProfileInformation({email: emailAddr });
+  const loggedInUserData = await findProfileInformation({email: emailAddr });
   // Json the object we get back.
+  console.log(loggedInUserData);
+    res.json({ loggedInUserData });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+}); 
+server.post("/profile/:id", authenticateToken, async (req, res, next) => {
+  // Deconstruct emailAddr from user
+  // console.log(req.params);
+  console.log('yeah, I was hit');
+  const {emailAddr} = res.locals.user;
+  const {filter} = req.body
+  console.log(emailAddr);
+
+  try {
+    // Make a SQL request on the column 'email' with the value in the variable 'emailAddr'
+  const usersProfileData = await findProfileInformation({email: filter });
+  // Json the object we get back.
+  console.log(usersProfileData);
     res.json({ usersProfileData });
   } catch (error) {
     console.log(error);
     next(error);
   }
 }); 
-
 // I believe there is a "header" error when the JWT expires. However the user doesn't log out?
 server.post("/search", authenticateToken, async (req, res, next) => {
   const {selectedTags} = req.body;
@@ -159,13 +181,15 @@ function generateToken(user) {
 // Middleware function
 function authenticateToken(req, res, next) {
   // create a variable for the token from the clients request.
+
   const token = req.headers.authorization
+
   // if token is false, return a 401.
   if(!token) return res.status(422).send('Access Denied');
-
   try{
     // Verify the JWT that we have to the clients JWT
     const verified = jwt.verify(token, secret);
+
     // store the verified payload to the user object in the locals object.
     res.locals.user = verified;
     next();

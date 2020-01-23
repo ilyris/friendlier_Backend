@@ -20,6 +20,7 @@ server.use(express.static(path.join(__dirname, "../build")));
 //   res.header("Access-Control-Allow-Origin", "*");
 //   next();
 // });
+const getApiAndEmit = "TODO"
 
 server.use(cors());
 
@@ -35,7 +36,6 @@ server.get("/loggedInUser", authenticateToken, async (req, res, next) => {
   console.log('Now I was hit!');
   const {emailAddr} = res.locals.user;
   // const {filter} = req.body
-  console.log('Now I was hit!');
   console.log(emailAddr)
   try {
     // Make a SQL request on the column 'email' with the value in the variable 'emailAddr'
@@ -67,6 +67,7 @@ server.post("/profile/:id", authenticateToken, async (req, res, next) => {
     next(error);
   }
 }); 
+ 
 // I believe there is a "header" error when the JWT expires. However the user doesn't log out?
 server.post("/search", authenticateToken, async (req, res, next) => {
   const {selectedTags} = req.body;
@@ -197,5 +198,10 @@ function authenticateToken(req, res, next) {
     res.status(401).json(error).send('Invalid Token');
   }
 }
+
+// Socket Connection via Socket.Io
+// io.on("connection", socket => {
+//   console.log("New client connected");
+// })
 
 server.listen(port);

@@ -13,6 +13,7 @@ const { hashSync, compareSync } = require('bcryptjs'); // bcrypt will encrypt pa
 const { port, secret } = require("../config/secrets.js");
 const { addUser, findUsersBy, addUserProfile, findProfileInformation, findSearchedUsers } = require("./models/users.js"); 
 
+console.log('hi');
 // the __dirname is the current directory from where the script is running
 server.use(express.static(__dirname));
 server.use(express.static(path.join(__dirname, "../build")));

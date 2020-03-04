@@ -3,7 +3,6 @@ exports.up = knex =>
 knex.schema.createTable("messages", tbl => {
   tbl.increments('messageId').primary();
   tbl.integer("senderId").notNullable();
-  tbl.foreign("senderId").refernces('users.id')
   tbl.integer('receiverId').notNullable();
   tbl.string("message").notNullable();
   tbl.bigInteger("sentAt").notNullable();

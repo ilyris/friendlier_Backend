@@ -1,7 +1,7 @@
 
 exports.up = knex =>
 knex.schema.createTable("users", tbl => {
-  tbl.increments();
+  tbl.increments('id').primary();
   tbl.string("email", 128).notNullable().unique();
   tbl.string("password", 128).notNullable();
   // tbl.text("token").notNullable();

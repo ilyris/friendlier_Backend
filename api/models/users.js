@@ -26,10 +26,21 @@ const findSearchedUsers = (filter) => {
         return db.raw(`select * from profile_information where interests @> ?::text[]`, [filter]);
     }
 }
+const addUserMessage = async (newMessage) => {
+    console.log('message being added');
+    return db('messages')
+    .insert(newMessage);
+}
+const getMessages = async (senderId, receiverId) =>{
+    return db.select("*").from('messages').where(senderId === senderId);
+}
+
 module.exports = {
     addUser,
     addUserProfile,
     findUsersBy,
     findProfileInformation,
-    findSearchedUsers
+    findSearchedUsers,
+    addUserMessage,
+    getMessages
 }

@@ -1,12 +1,7 @@
-const express = require("express")
-const path = require("path")
-const cors = require("cors")
-
+const { Router } = require("express")
 const jwt = require("jsonwebtoken")
 const { hashSync, compareSync } = require("bcryptjs") // bcrypt will encrypt passwords to be saved in db
 
-const { interestsArray } = require("./interestData.js")
-const { port, secret } = require("../config/secrets.js")
 const {
     addUser,
     findUsersBy,
@@ -15,17 +10,12 @@ const {
     findSearchedUsers,
     addUserMessage,
     getMessages
-} = require("./models/users.js")
+} = require("../models/users")
+const { interestsArray } = require("../utils/interestData")
 
-const server = express()
-server.use(cors())
+const router = Router()
 
-server.use(express.json()) // use middleware to parse the request body to a JSON object so we can access the data.
-server.get("/", (req, res) => {
-    res.json({ interestsArray })
-})
-
-server.get("/loggedInUser", authenticateToken, async (req, res, next) => {
+router.get("/loggedInUser", authenticateToken, async (req, res, next) => {
     // Deconstruct emailAddr from user
     const { emailAddr } = res.locals.user
     // const {filter} = req.body
@@ -41,7 +31,7 @@ server.get("/loggedInUser", authenticateToken, async (req, res, next) => {
         next(error)
     }
 })
-server.post("/profile/:id", authenticateToken, async (req, res, next) => {
+router.post("/profile/:id", authenticateToken, async (req, res, next) => {
     const { profileId } = req.body
     try {
         // Make a SQL request on the column 'email' with the value in the variable 'emailAddr'
@@ -55,7 +45,7 @@ server.post("/profile/:id", authenticateToken, async (req, res, next) => {
 })
 
 // I believe there is a "header" error when the JWT expires. However the user doesn't log out?
-server.post("/search", authenticateToken, async (req, res, next) => {
+router.post("/search", authenticateToken, async (req, res, next) => {
     const { selectedTags } = req.body
     // Split the input to create an array.
     // const toArraySearchInput = mergedInput.split(" ");
@@ -89,8 +79,8 @@ server.post("/search", authenticateToken, async (req, res, next) => {
     }
 })
 
-server.post(`/signup`, async (req, res, next) => {
-    // Listen to trafic on the /signup path from our Front-End serverlication
+router.post(`/signup`, async (req, res, next) => {
+    // Listen to trafic on the /signup path from our Front-End routerlication
     try {
         // try the code below and exectue if the req comes back good.
         let { email, password } = req.body // store the request body to the newUser varliable.
@@ -115,7 +105,7 @@ server.post(`/signup`, async (req, res, next) => {
     }
 })
 
-server.post("/signup/add-profile", async (request, response, next) => {
+router.post("/signup/add-profile", async (request, response, next) => {
     let { email, interests } = request.body.profileObject
     let {
         firstName,
@@ -146,7 +136,7 @@ server.post("/signup/add-profile", async (request, response, next) => {
     }
 })
 
-server.post("/send-message", async (request, response, next) => {
+router.post("/send-message", async (request, response, next) => {
     const { senderId, receiverId, message, sentAt } = request.body
     const reconstructedMessage = {
         senderId,
@@ -162,7 +152,7 @@ server.post("/send-message", async (request, response, next) => {
     }
 })
 
-server.get(
+router.get(
     "/profile/:id/messages",
     authenticateToken,
     async (request, response, next) => {
@@ -179,7 +169,7 @@ server.get(
     }
 )
 
-server.post(`/login`, async (req, res, next) => {
+router.post(`/login`, async (req, res, next) => {
     let { email, password } = req.body
     console.log(email, password)
     try {
@@ -197,13 +187,17 @@ server.post(`/login`, async (req, res, next) => {
             // email and password match to a user in the database.
             // Create jwt token
             const token = generateToken(user)
-            // Server responds with the token in JSON format
+            // router responds with the token in JSON format
             res.json({ token })
             console.log("Success")
         }
     } catch (error) {
         next(error)
     }
+})
+
+router.get("/", (req, res) => {
+    res.json({ interestsArray })
 })
 
 function generateToken(user) {
@@ -237,11 +231,4 @@ function authenticateToken(req, res, next) {
     }
 }
 
-// Socket Connection via Socket.Io
-// io.on("connection", socket => {
-//   console.log("New client connected");
-// })
-
-server.listen(port, () => {
-    console.log(`Hideir REST API listening @ http://localhost:${port}`)
-})
+module.exports = router

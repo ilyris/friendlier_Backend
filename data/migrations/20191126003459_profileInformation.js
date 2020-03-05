@@ -12,7 +12,6 @@ exports.up = knex =>
         tbl.string("region", 128).notNullable()
         tbl.string("city", 128).notNullable()
         tbl.string("state", 128).notNullable()
-        // tbl.text("token").notNullable();
         tbl.timestamps(true, true)
     })
 

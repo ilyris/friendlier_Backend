@@ -5,7 +5,6 @@ exports.up = knex =>
             .notNullable()
             .unique()
         tbl.string("password", 128).notNullable()
-        // tbl.text("token").notNullable();
         tbl.timestamps(true, true)
     })
 

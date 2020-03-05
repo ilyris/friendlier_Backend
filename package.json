@@ -2,6 +2,7 @@
     "name": "friendlier_backend",
     "version": "0.1.0",
     "private": true,
+    "main": "./api/server.js",
     "dependencies": {
         "bcryptjs": "^2.4.3",
         "body-parser": "^1.19.0",
@@ -17,15 +18,13 @@
         "socket.io": "^2.3.0"
     },
     "scripts": {
-        "start": "node ./api/server.js",
-        "dev-start": "nodemon ./api/server.js",
+        "dev": "nodemon -r dotenv/config .",
+        "format": "prettier --write \"**/*.{js,scss,css,html,json,md,less,tsx,ts}\"",
         "migrate": "knex migrate:latest",
-        "unmigrate": "knex migrate:rollback",
-        "seed": "knex seed:run ",
-        "heroku-postbuild": "knex migrate:latest",
-        "format": "prettier --write \"**/*.{js,scss,css,html,json,md,less,tsx,ts}\""
+        "rollback": "knex migrate:rollback",
+        "seed": "knex seed:run",
+        "start": "node -r dotenv/config ."
     },
-    "main": "server.js",
     "devDependencies": {
         "nodemon": "^1.19.4"
     },

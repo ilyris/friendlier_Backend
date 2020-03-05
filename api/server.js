@@ -1,14 +1,11 @@
-//server.js
-// npm run start === Starts the server.
-console.log("we're up and running")
-require("dotenv").config()
-const { interestsArray } = require("./interestData.js")
 const express = require("express")
 const path = require("path")
 const cors = require("cors")
-const server = express()
+
 const jwt = require("jsonwebtoken")
 const { hashSync, compareSync } = require("bcryptjs") // bcrypt will encrypt passwords to be saved in db
+
+const { interestsArray } = require("./interestData.js")
 const { port, secret } = require("../config/secrets.js")
 const {
     addUser,
@@ -19,6 +16,8 @@ const {
     addUserMessage,
     getMessages
 } = require("./models/users.js")
+
+const server = express()
 
 // the __dirname is the current directory from where the script is running
 server.use(express.static(__dirname))
@@ -248,4 +247,6 @@ function authenticateToken(req, res, next) {
 //   console.log("New client connected");
 // })
 
-server.listen(port)
+server.listen(port, () => {
+    console.log(`Hideir REST API listening @ http://localhost:${port}`)
+})

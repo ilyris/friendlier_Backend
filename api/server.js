@@ -18,11 +18,6 @@ const {
 } = require("./models/users.js")
 
 const server = express()
-
-// the __dirname is the current directory from where the script is running
-server.use(express.static(__dirname))
-server.use(express.static(path.join(__dirname, "../build")))
-
 server.use(cors())
 
 server.use(express.json()) // use middleware to parse the request body to a JSON object so we can access the data.

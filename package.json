@@ -39,6 +39,5 @@
         "url": "https://github.com/ilyris/friendlier_Backend/issues"
     },
     "homepage": "https://github.com/ilyris/friendlier_Backend#readme",
-    "description": "",
-    "heroku-run-build-script": true
+    "description": ""
 }

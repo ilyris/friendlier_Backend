@@ -6,24 +6,26 @@ require("dotenv").config();
 const {interestsArray} = require('./interestData.js');
 const express = require("express");
 const path = require("path");
-const cors = require('cors')
+const cors = require('cors');
 const server = express();
 const jwt = require('jsonwebtoken');
 const { hashSync, compareSync } = require('bcryptjs'); // bcrypt will encrypt passwords to be saved in db
 const { port, secret } = require("../config/secrets.js");
-const { addUser, findUsersBy, addUserProfile, findProfileInformation, findSearchedUsers } = require("./models/users.js"); 
+const { addUser, findUsersBy, addUserProfile, findProfileInformation, findSearchedUsers, addUserMessage, getMessages } = require("./models/users.js"); 
 
 // the __dirname is the current directory from where the script is running
 server.use(express.static(__dirname));
 server.use(express.static(path.join(__dirname, "../build")));
+<<<<<<< HEAD
 // server.use((req, res, next) => {
 //   res.header("Access-Control-Allow-Origin", "*");
 //   next();
 // });
 const getApiAndEmit = "TODO"
+=======
+>>>>>>> 95a5413a29f621c35ae8a1d9d988ca715d585d39
 
 server.use(cors());
-
 
 server.use(express.json()); // use middleware to parse the request body to a JSON object so we can access the data.
 server.get("/", (req, res) => {
@@ -33,15 +35,17 @@ server.get("/", (req, res) => {
 
 server.get("/loggedInUser", authenticateToken, async (req, res, next) => {
   // Deconstruct emailAddr from user
-  console.log('Now I was hit!');
   const {emailAddr} = res.locals.user;
   // const {filter} = req.body
+<<<<<<< HEAD
   console.log(emailAddr)
+=======
+  console.log(emailAddr);
+>>>>>>> 95a5413a29f621c35ae8a1d9d988ca715d585d39
   try {
     // Make a SQL request on the column 'email' with the value in the variable 'emailAddr'
   const loggedInUserData = await findProfileInformation({email: emailAddr });
   // Json the object we get back.
-  console.log(loggedInUserData);
     res.json({ loggedInUserData });
   } catch (error) {
     console.log(error);
@@ -49,18 +53,11 @@ server.get("/loggedInUser", authenticateToken, async (req, res, next) => {
   }
 }); 
 server.post("/profile/:id", authenticateToken, async (req, res, next) => {
-  // Deconstruct emailAddr from user
-  // console.log(req.params);
-  console.log('yeah, I was hit');
-  const {emailAddr} = res.locals.user;
-  const {filter} = req.body
-  console.log(emailAddr);
-
+  const {profileId} = req.body
   try {
     // Make a SQL request on the column 'email' with the value in the variable 'emailAddr'
-  const usersProfileData = await findProfileInformation({email: filter });
+  const usersProfileData = await findProfileInformation({id: profileId }); // create a inner join to get profile data for a user based off ID
   // Json the object we get back.
-  console.log(usersProfileData);
     res.json({ usersProfileData });
   } catch (error) {
     console.log(error);
@@ -74,7 +71,7 @@ server.post("/search", authenticateToken, async (req, res, next) => {
   // Split the input to create an array.
   // const toArraySearchInput = mergedInput.split(" ");
 try {
-        // loop through the interests and all special characters. This regex was found here 
+  // loop through the interests and all special characters. This regex was found here 
   // https://stackoverflow.com/questions/4374822/remove-all-special-characters-with-regexp
   if(!selectedTags) {
     console.log('There was no interests selected');
@@ -141,7 +138,35 @@ const reconstructedUserProfileInformation = {
   } catch(error) {
     next(error);
   }
-})
+});
+
+server.post('/send-message', async (request, response, next) => {
+  const {senderId, receiverId, message, sentAt} = request.body;
+  const reconstructedMessage = {
+    senderId,
+    receiverId,
+    message,
+    sentAt  }
+    try {
+      await addUserMessage(reconstructedMessage);
+      response.sendStatus(201);
+    } catch(error) {
+      next(error);
+    }
+});
+
+server.get('/profile/:id/messages', authenticateToken, async (request, response, next) => {
+  console.log('profile id messages route');
+  const loggedInUserId = request.params.id;
+  const receiverUserId = request.body.receiveingUserId;
+  try {
+    const messages = await getMessages(loggedInUserId,receiverUserId);
+    console.log(messages);
+    response.json({messages});
+  } catch(error) {
+    next(error);
+  }
+});
 
 server.post(`/login`,  async (req, res, next) => {
   let {email, password} = req.body;
@@ -159,7 +184,6 @@ server.post(`/login`,  async (req, res, next) => {
       // Create jwt token
       const token = generateToken(user);  
       // Server responds with the token in JSON format
-      
       res.json({token})
       console.log('Success');
 
@@ -182,8 +206,7 @@ function generateToken(user) {
 // Middleware function
 function authenticateToken(req, res, next) {
   // create a variable for the token from the clients request.
-
-  const token = req.headers.authorization
+  const token = req.headers.authorization;
 
   // if token is false, return a 401.
   if(!token) return res.status(422).send('Access Denied');

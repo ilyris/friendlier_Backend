@@ -26,6 +26,7 @@
         "start": "node -r dotenv/config ."
     },
     "devDependencies": {
+        "husky": "^4.2.3",
         "nodemon": "^2.0.2"
     },
     "repository": {

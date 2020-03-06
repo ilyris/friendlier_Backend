@@ -27,10 +27,7 @@ const findSearchedUsers = filter => {
     } else if (filter.length) {
         console.log("we tried to grab users")
         // return users with at least one interest.
-        return db.raw(
-            `select * from profile_information where interests @> ?::text[]`,
-            [filter]
-        )
+        return db.raw(`select * from profile_information where interests @> ?::text[]`, [filter])
     }
 }
 const addUserMessage = async newMessage => {

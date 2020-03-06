@@ -59,16 +59,13 @@ router.post("/search", authenticateToken, async (req, res, next) => {
                 splitInterests.replace(/[^\w\s]/g, "")
             )
             // compare our interestData array to our cleanCommaString
-            const comparedAndFilteredInterests = interestsArray.filter(
-                element => cleanArray.includes(element)
+            const comparedAndFilteredInterests = interestsArray.filter(element =>
+                cleanArray.includes(element)
             )
             // check that our filtered search results has NO matching interests.
-            if (comparedAndFilteredInterests.length <= 0)
-                console.log("no search query matched")
+            if (comparedAndFilteredInterests.length <= 0) console.log("no search query matched")
             // Make a SQL request on the column 'interests' column.
-            const matchedUsersData = await findSearchedUsers(
-                comparedAndFilteredInterests
-            )
+            const matchedUsersData = await findSearchedUsers(comparedAndFilteredInterests)
             const matchedRows = matchedUsersData.rows
             // Json the object we get back.
             res.json({ matchedRows })
@@ -152,22 +149,18 @@ router.post("/send-message", async (request, response, next) => {
     }
 })
 
-router.get(
-    "/profile/:id/messages",
-    authenticateToken,
-    async (request, response, next) => {
-        console.log("profile id messages route")
-        const loggedInUserId = request.params.id
-        const receiverUserId = request.body.receiveingUserId
-        try {
-            const messages = await getMessages(loggedInUserId, receiverUserId)
-            console.log(messages)
-            response.json({ messages })
-        } catch (error) {
-            next(error)
-        }
+router.get("/profile/:id/messages", authenticateToken, async (request, response, next) => {
+    console.log("profile id messages route")
+    const loggedInUserId = request.params.id
+    const receiverUserId = request.body.receiveingUserId
+    try {
+        const messages = await getMessages(loggedInUserId, receiverUserId)
+        console.log(messages)
+        response.json({ messages })
+    } catch (error) {
+        next(error)
     }
-)
+})
 
 router.post(`/login`, async (req, res, next) => {
     let { email, password } = req.body

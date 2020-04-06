@@ -156,7 +156,7 @@ server.get('/profile/:id/messages', authenticateToken, async (request, response,
   }
 });
 
-server.post(`/login`,  async (req, res, next) => {
+server.post(`/signin`,  async (req, res, next) => {
   let {email, password} = req.body;
   console.log(email, password);
   try {

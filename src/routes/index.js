@@ -163,7 +163,7 @@ router.get("/profile/:id/messages", authenticateToken, async (request, response,
     }
 })
 
-router.post(`/login`, async (req, res, next) => {
+router.post(`/signin`, async (req, res, next) => {
     let { email, password } = req.body
     console.log(email, password)
     try {

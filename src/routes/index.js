@@ -1,6 +1,7 @@
 const { Router } = require("express")
 const jwt = require("jsonwebtoken")
 const { hashSync, compareSync } = require("bcryptjs") // bcrypt will encrypt passwords to be saved in db
+const { JWT_SECRET } = require("../config.js");
 
 const {
     addUser,
@@ -200,7 +201,8 @@ function generateToken(user) {
     const options = {
         expiresIn: "24h"
     }
-    return jwt.sign(payload, secret, options)
+    console.log(JWT_SECRET);
+    return jwt.sign(payload, JWT_SECRET, options)
 }
 
 // Middleware function
@@ -212,7 +214,7 @@ function authenticateToken(req, res, next) {
     if (!token) return res.status(422).send("Access Denied")
     try {
         // Verify the JWT that we have to the clients JWT
-        const verified = jwt.verify(token, secret)
+        const verified = jwt.verify(token, JWT_SECRET)
 
         // store the verified payload to the user object in the locals object.
         res.locals.user = verified

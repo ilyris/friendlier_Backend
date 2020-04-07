@@ -169,36 +169,32 @@ router.get("/profile/:id/messages", authenticateToken, async (request, response,
 })
 
 router.post(`/signin`, async (req, res, next) => {
-    let { username, email, password } = req.body
-    console.log(username,email, password)
+    let { username, password } = req.body;
     try {
         let user;
-        if(email == false || email.length <= 11) {
-            user = await findUsersBy({ username }).first() // Search database for first user with the email from the req body.
-            console.log('email was false')
-        }
-        if(username == false || username.length <= 4) {
-            console.log(email);
-            user = await findUsersBy({ email }).first() // Search database for first user with the email from the req body.
-            console.log('username was false');
+        if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(username)) {
+            // check that it matches email
+            user = await findUsersBy({ email: username }).first();
+        } else if(/^\S*$/.test(username)) {
+            console.log('this was an username')
+            user = await findUsersBy({ username }).first();
+        } else if(/^\S*$/.test(username) === false) {
+            res.sendStatus(401)
+            console.log('Invalid Username');
+        } else if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(username) === false) {
+            console.log('invalid Email Address');
+            res.sendStatus(401);
         }
         const isCorrectPassword = await compareSync(password, user.password) // compare the req password with the returned user pass from db.
 
-        if (email !== user.email || !isCorrectPassword) {
-            // check if we have the right email or password
-            console.log("email or password was invalid.")
-            res.sendStatus(401)
-        } else if (email === undefined || password === undefined) {
-            // check if the email or password are even in the database
-            console.log("creds were bogus")
-            res.sendStatus(401)
-        } else if (email === user.email && isCorrectPassword) {
-            // email and password match to a user in the database.
+        if(username == false || username === undefined || !isCorrectPassword) {
+                console.log("username or password was invalid.")
+                res.sendStatus(401)
+        } else if ((username === user.username && isCorrectPassword) || (username === user.email && isCorrectPassword)) {
             // Create jwt token
             const token = generateToken(user)
-            // router responds with the token in JSON format
             res.json({ token })
-            console.log("Success")
+            console.log("Singed In")
         }
     } catch (error) {
         next(error)

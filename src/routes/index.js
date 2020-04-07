@@ -18,12 +18,14 @@ const router = Router()
 
 router.get("/loggedInUser", authenticateToken, async (req, res, next) => {
     // Deconstruct emailAddr from user
-    const { emailAddr } = res.locals.user
+    const { emailAddr, username } = res.locals.user;
+    console.log(res.locals.user);
     // const {filter} = req.body
     try {
-        // Make a SQL request on the column 'email' with the value in the variable 'emailAddr'
+        // Make a SQL request on the column 'email/username' with the value in the variable 'emailAddr/username'
         const loggedInUserData = await findProfileInformation({
-            email: emailAddr
+            email: emailAddr,
+            username: username
         })
         // Json the object we get back.
         res.json({ loggedInUserData })
@@ -81,19 +83,20 @@ router.post(`/signup`, async (req, res, next) => {
     // Listen to trafic on the /signup path from our Front-End routerlication
     try {
         // try the code below and exectue if the req comes back good.
-        let { email, password } = req.body // store the request body to the newUser varliable.
-        console.log(email, password)
-        if (password.length >= 8 && email.length >= 12) {
+        let { username, email, password } = req.body // store the request body to the newUser varliable.
+        console.log(username, email, password)
+        if (password.length >= 8 && email.length >= 12 && username.length >= 5) {
             const hashedPassword = await hashSync(password, 14)
             password = hashedPassword
             const newUser = {
                 email: email,
-                password: password
+                password: password,
+                username: username
             }
             await addUser(newUser)
             console.log("user has been created")
             res.sendStatus(201)
-        } else {
+        } else { 
             console.log("User was not created")
             res.sendStatus(401)
         }
@@ -104,7 +107,8 @@ router.post(`/signup`, async (req, res, next) => {
 })
 
 router.post("/signup/add-profile", async (request, response, next) => {
-    let { email, interests } = request.body.profileObject
+    console.log(request.body.profileObject);
+    let { username, email, interests } = request.body.profileObject
     let {
         firstName,
         lastName,
@@ -117,6 +121,7 @@ router.post("/signup/add-profile", async (request, response, next) => {
 
     const reconstructedUserProfileInformation = {
         email: email,
+        username: username,
         interests: interests,
         firstName: firstName,
         lastName: lastName,
@@ -164,11 +169,21 @@ router.get("/profile/:id/messages", authenticateToken, async (request, response,
 })
 
 router.post(`/signin`, async (req, res, next) => {
-    let { email, password } = req.body
-    console.log(email, password)
+    let { username, email, password } = req.body
+    console.log(username,email, password)
     try {
-        const user = await findUsersBy({ email }).first() // Search database for first user with the email from the req body.
+        let user;
+        if(email == false || email.length <= 11) {
+            user = await findUsersBy({ username }).first() // Search database for first user with the email from the req body.
+            console.log('email was false')
+        }
+        if(username == false || username.length <= 4) {
+            console.log(email);
+            user = await findUsersBy({ email }).first() // Search database for first user with the email from the req body.
+            console.log('username was false');
+        }
         const isCorrectPassword = await compareSync(password, user.password) // compare the req password with the returned user pass from db.
+
         if (email !== user.email || !isCorrectPassword) {
             // check if we have the right email or password
             console.log("email or password was invalid.")
@@ -196,7 +211,8 @@ router.get("/", (req, res) => {
 
 function generateToken(user) {
     const payload = {
-        emailAddr: user.email // sub
+        emailAddr: user.email, // sub
+        username: user.username
     }
     const options = {
         expiresIn: "24h"

@@ -33,6 +33,7 @@ const findSearchedUsers = filter => {
 }
 const addUserMessage = async newMessage => {
     console.log("message being added")
+    console.log(newMessage);
     return db("messages").insert(newMessage)
 }
 const getMessages = async (senderId, receiverId) => {
@@ -41,7 +42,11 @@ const getMessages = async (senderId, receiverId) => {
         .from("messages")
         .where(senderId === senderId)
 }
-
+const getInterests = async () => {
+    return db
+        .select("name")
+        .from("Interest");
+}
 module.exports = {
     addUser,
     addUserProfile,
@@ -49,5 +54,6 @@ module.exports = {
     findProfileInformation,
     findSearchedUsers,
     addUserMessage,
-    getMessages
+    getMessages,
+    getInterests
 }

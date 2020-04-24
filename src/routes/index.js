@@ -10,7 +10,8 @@ const {
     findProfileInformation,
     findSearchedUsers,
     addUserMessage,
-    getMessages
+    getMessages,
+    getInterests
 } = require("../models/users")
 const { interestsArray } = require("../utils/interestData")
 
@@ -105,7 +106,16 @@ router.post(`/signup`, async (req, res, next) => {
         next("There was an error " + error)
     }
 })
-
+router.get("/signup/interests", async (request, response, next) => {
+    try{
+        console.log('tried to grab interests');
+        const interests = await getInterests();
+        console.log(interests);
+        response.json({ interests })
+    }catch(error) {
+        next(error);
+    }
+})
 router.post("/signup/add-profile", async (request, response, next) => {
     console.log(request.body.profileObject);
     let { username, email, interests } = request.body.profileObject
@@ -176,6 +186,7 @@ router.post(`/signin`, async (req, res, next) => {
             // check that it matches email
             user = await findUsersBy({ email: username }).first();
         } else if(/^\S*$/.test(username)) {
+            // check that it then matches a username with no spaces if its not an email address
             console.log('this was an username')
             user = await findUsersBy({ username }).first();
         } else if(/^\S*$/.test(username) === false) {
@@ -220,7 +231,7 @@ function generateToken(user) {
 // Middleware function
 function authenticateToken(req, res, next) {
     // create a variable for the token from the clients request.
-    const token = req.headers.authorization
+    const token = req.headers.authorization;
 
     // if token is false, return a 401.
     if (!token) return res.status(422).send("Access Denied")

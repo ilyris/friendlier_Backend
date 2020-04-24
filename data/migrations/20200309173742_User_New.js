@@ -1,6 +1,9 @@
 exports.up = knex =>
-    knex.schema.createTable("users", tbl => {
+    knex.schema.createTable("User", tbl => {
         tbl.increments("id").primary()
+        tbl.string("username", 128)
+            .notNullable()
+            .unique()
         tbl.string("email", 128)
             .notNullable()
             .unique()
@@ -8,4 +11,4 @@ exports.up = knex =>
         tbl.timestamps(true, true)
     })
 
-exports.down = knex => knex.schema.dropTableIfExists("users")
+exports.down = knex => knex.schema.dropTableIfExists("User")

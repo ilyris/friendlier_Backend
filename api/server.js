@@ -10,7 +10,7 @@ const cors = require('cors');
 const server = express();
 const jwt = require('jsonwebtoken');
 const { hashSync, compareSync } = require('bcryptjs'); // bcrypt will encrypt passwords to be saved in db
-const { port, secret } = require("../config/secrets.js");
+const { port, secret } = require("../config.js");
 const { addUser, findUsersBy, addUserProfile, findProfileInformation, findSearchedUsers, addUserMessage, getMessages } = require("./models/users.js"); 
 
 // the __dirname is the current directory from where the script is running
@@ -52,6 +52,7 @@ server.post("/profile/:id", authenticateToken, async (req, res, next) => {
     next(error);
   }
 }); 
+ 
 // I believe there is a "header" error when the JWT expires. However the user doesn't log out?
 server.post("/search", authenticateToken, async (req, res, next) => {
   const {selectedTags} = req.body;
@@ -155,7 +156,7 @@ server.get('/profile/:id/messages', authenticateToken, async (request, response,
   }
 });
 
-server.post(`/login`,  async (req, res, next) => {
+server.post(`/signin`,  async (req, res, next) => {
   let {email, password} = req.body;
   console.log(email, password);
   try {
@@ -208,5 +209,10 @@ function authenticateToken(req, res, next) {
     res.status(401).json(error).send('Invalid Token');
   }
 }
+
+// Socket Connection via Socket.Io
+// io.on("connection", socket => {
+//   console.log("New client connected");
+// })
 
 server.listen(port);

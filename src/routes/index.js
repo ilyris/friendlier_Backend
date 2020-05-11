@@ -165,7 +165,7 @@ router.post("/send-message", async (request, response, next) => {
     }
 })
 
-router.get("/profile/:id/messages", authenticateToken, async (request, response, next) => {
+router.get("/profile/:id/messages", async (request, response, next) => {
     console.log("profile id messages route")
     const loggedInUserId = request.params.id
     const receiverUserId = request.body.receiveingUserId

@@ -5,7 +5,7 @@ exports.up = knex =>
         tbl.integer("user_id")
             .notNullable()
             .references("id")
-            .inTable("users")
+            .inTable("User")
         tbl.string("tagline", 128)
         tbl.timestamps(true, true)
     })

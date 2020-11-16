@@ -1,12 +1,8 @@
-exports.up = knex =>
-    knex.schema.createTable("profile_information", tbl => {
+exports.up = (knex) =>
+    knex.schema.createTable("profile_information", (tbl) => {
         tbl.increments()
-        tbl.string("email", 128)
-            .notNullable()
-            .unique()
-        tbl.string("username", 128)
-            .notNullable()
-            .unique()
+        tbl.string("email", 128).notNullable().unique()
+        tbl.string("username", 128).notNullable().unique()
         tbl.specificType("interests", "text ARRAY").notNullable()
         tbl.string("firstName", 128).notNullable()
         tbl.string("lastName", 128).notNullable()
@@ -18,4 +14,4 @@ exports.up = knex =>
         tbl.timestamps(true, true)
     })
 
-exports.down = knex => knex.schema.dropTableIfExists("profile_information")
+exports.down = (knex) => knex.schema.dropTableIfExists("profile_information")

@@ -14,8 +14,8 @@
 // Else if -- the correct, matching elements should be stored into a new array then passed into the query.
 
 function filterByInterest(array, comparedArray) {
-    return array.filter(function(items) {
-        comparedArray.filter(compareArrayElements => {
+    return array.filter(function (items) {
+        comparedArray.filter((compareArrayElements) => {
             console.log("compare items " + items)
             console.log("compare elements " + compareArrayElements)
             console.log(items === compareArrayElements)

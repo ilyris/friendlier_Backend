@@ -1,15 +1,12 @@
-exports.up = knex =>
-    knex.schema.createTable("Location", tbl => {
+exports.up = (knex) =>
+    knex.schema.createTable("Location", (tbl) => {
         tbl.increments()
         tbl.string("country", 128).notNullable()
         tbl.string("state", 128).notNullable()
         tbl.string("city", 128).notNullable()
         tbl.string("zipcode", 128).notNullable()
-        tbl.integer("user_id")
-            .notNullable()
-            .references("id")
-            .inTable("User")
+        tbl.integer("user_id").notNullable().references("id").inTable("User")
         tbl.timestamps(true, true)
     })
 
-exports.down = knex => knex.schema.dropTableIfExists("Location")
+exports.down = (knex) => knex.schema.dropTableIfExists("Location")

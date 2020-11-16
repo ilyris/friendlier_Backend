@@ -1,15 +1,27 @@
 const express = require("express")
 const cors = require("cors")
+const whitelist = ['http://localhost:3000'];
+const corsOptions = {
+    credentials: true,
+    origin: (origin, callback) => {
+        if(whitelist.includes(origin))
+        return callback(null, true)
+
+        callback(new Error("Not allowed by CORS"));
+    }
+}
 
 const { PORT } = require("./config")
 const apiRouter = require("./routes")
+const messagesRouter = require('./routes/messages')
 
 const server = express()
-server.use(cors())
+server.use(cors(corsOptions))
+server.io = require('socket.io')()
 
 server.use(express.json()) // use middleware to parse the request body to a JSON object so we can access the data.
 server.use("/", apiRouter)
-
+server.use("/profile/:id/messages", messagesRouter)
 server.listen(PORT, () => {
     console.log(`Hideir REST API listening @ http://localhost:${PORT}`)
 })

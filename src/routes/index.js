@@ -1,8 +1,7 @@
 const { Router } = require("express")
 const jwt = require("jsonwebtoken")
 const { hashSync, compareSync } = require("bcryptjs") // bcrypt will encrypt passwords to be saved in db
-const { JWT_SECRET } = require("../config.js");
-
+const { JWT_SECRET } = require("../config.js")
 const {
     addUser,
     findUsersBy,
@@ -19,8 +18,8 @@ const router = Router()
 
 router.get("/loggedInUser", authenticateToken, async (req, res, next) => {
     // Deconstruct emailAddr from user
-    const { emailAddr, username } = res.locals.user;
-    console.log(res.locals.user);
+    const { emailAddr, username } = res.locals.user
+    console.log(res.locals.user)
     // const {filter} = req.body
     try {
         // Make a SQL request on the column 'email/username' with the value in the variable 'emailAddr/username'
@@ -59,11 +58,11 @@ router.post("/search", authenticateToken, async (req, res, next) => {
         if (!selectedTags) {
             console.log("There was no interests selected")
         } else if (selectedTags) {
-            const cleanArray = selectedTags.map(splitInterests =>
+            const cleanArray = selectedTags.map((splitInterests) =>
                 splitInterests.replace(/[^\w\s]/g, "")
             )
             // compare our interestData array to our cleanCommaString
-            const comparedAndFilteredInterests = interestsArray.filter(element =>
+            const comparedAndFilteredInterests = interestsArray.filter((element) =>
                 cleanArray.includes(element)
             )
             // check that our filtered search results has NO matching interests.
@@ -97,7 +96,7 @@ router.post(`/signup`, async (req, res, next) => {
             await addUser(newUser)
             console.log("user has been created")
             res.sendStatus(201)
-        } else { 
+        } else {
             console.log("User was not created")
             res.sendStatus(401)
         }
@@ -107,17 +106,17 @@ router.post(`/signup`, async (req, res, next) => {
     }
 })
 router.get("/signup/interests", async (request, response, next) => {
-    try{
-        console.log('tried to grab interests');
-        const interests = await getInterests();
-        console.log(interests);
+    try {
+        console.log("tried to grab interests")
+        const interests = await getInterests()
+        console.log(interests)
         response.json({ interests })
-    }catch(error) {
-        next(error);
+    } catch (error) {
+        next(error)
     }
 })
 router.post("/signup/add-profile", async (request, response, next) => {
-    console.log(request.body.profileObject);
+    console.log(request.body.profileObject)
     let { username, email, interests } = request.body.profileObject
     let {
         firstName,
@@ -179,29 +178,32 @@ router.get("/profile/:id/messages", async (request, response, next) => {
 })
 
 router.post(`/signin`, async (req, res, next) => {
-    let { username, password } = req.body;
+    let { username, password } = req.body
     try {
-        let user;
-        if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(username)) {
+        let user
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(username)) {
             // check that it matches email
-            user = await findUsersBy({ email: username }).first();
-        } else if(/^\S*$/.test(username)) {
+            user = await findUsersBy({ email: username }).first()
+        } else if (/^\S*$/.test(username)) {
             // check that it then matches a username with no spaces if its not an email address
-            console.log('this was an username')
-            user = await findUsersBy({ username }).first();
-        } else if(/^\S*$/.test(username) === false) {
+            console.log("this was an username")
+            user = await findUsersBy({ username }).first()
+        } else if (/^\S*$/.test(username) === false) {
             res.sendStatus(401)
-            console.log('Invalid Username');
-        } else if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(username) === false) {
-            console.log('invalid Email Address');
-            res.sendStatus(401);
+            console.log("Invalid Username")
+        } else if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(username) === false) {
+            console.log("invalid Email Address")
+            res.sendStatus(401)
         }
         const isCorrectPassword = await compareSync(password, user.password) // compare the req password with the returned user pass from db.
 
-        if(username == false || username === undefined || !isCorrectPassword) {
-                console.log("username or password was invalid.")
-                res.sendStatus(401)
-        } else if ((username === user.username && isCorrectPassword) || (username === user.email && isCorrectPassword)) {
+        if (username == false || username === undefined || !isCorrectPassword) {
+            console.log("username or password was invalid.")
+            res.sendStatus(401)
+        } else if (
+            (username === user.username && isCorrectPassword) ||
+            (username === user.email && isCorrectPassword)
+        ) {
             // Create jwt token
             const token = generateToken(user)
             res.json({ token })
@@ -224,14 +226,14 @@ function generateToken(user) {
     const options = {
         expiresIn: "24h"
     }
-    console.log(JWT_SECRET);
+    console.log(JWT_SECRET)
     return jwt.sign(payload, JWT_SECRET, options)
 }
 
 // Middleware function
 function authenticateToken(req, res, next) {
     // create a variable for the token from the clients request.
-    const token = req.headers.authorization;
+    const token = req.headers.authorization
     // if token is false, return a 401.
     if (!token) return res.status(422).send("Access Denied")
     try {
@@ -241,9 +243,7 @@ function authenticateToken(req, res, next) {
         res.locals.user = verified
         next()
     } catch (error) {
-        res.status(401)
-            .json(error)
-            .send("Invalid Token")
+        res.status(401).json(error).send("Invalid Token")
     }
 }
 

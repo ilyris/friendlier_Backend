@@ -1,6 +1,6 @@
 const { Router } = require("express")
 const router = Router()
-const server = require("http").createServer(router)
+const server = require("https").createServer(router)
 
 // const jwt = require("jsonwebtoken")
 // const { hashSync, compareSync } = require("bcryptjs") // bcrypt will encrypt passwords to be saved in db

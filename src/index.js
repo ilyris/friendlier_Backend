@@ -1,6 +1,6 @@
 const express = require("express")
 const cors = require("cors")
-const whitelist = ["http://localhost:3000"]
+const whitelist = ["https://hideir.netlify.app"]
 const corsOptions = {
     credentials: true,
     origin: (origin, callback) => {

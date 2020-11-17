@@ -8,7 +8,7 @@ const server = require("http").createServer(router)
 
 const io = (module.exports.io = require("socket.io")(server, {
     cors: {
-        origin: "http:localhost:3000",
+        origin: "https://hideir.netlify.app",
         methods: ["GET", "POST"],
         allowedHeaders: ["my-custom-header"],
         credentials: false

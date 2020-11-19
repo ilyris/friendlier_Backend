@@ -20,7 +20,7 @@ server.io = require("socket.io")()
 
 server.use(express.json()) // use middleware to parse the request body to a JSON object so we can access the data.
 server.use("/", apiRouter)
-server.use("/profile/:id/messages", messagesRouter)
+server.use("/", messagesRouter)
 server.listen(PORT, () => {
     console.log(`Hideir REST API listening @ http://localhost:${PORT}`)
 })

@@ -1,3 +1,4 @@
+// ************* This is the main server file  ***********
 const express = require("express")
 const cors = require("cors")
 const whitelist = ["https://hideir.netlify.app"]
@@ -15,12 +16,15 @@ const apiRouter = require("./routes")
 const messagesRouter = require("./routes/messages")
 
 const server = express()
+const io = require("socket.io")(server)
+
 server.use(cors(corsOptions))
-server.io = require("socket.io")()
 
 server.use(express.json()) // use middleware to parse the request body to a JSON object so we can access the data.
 server.use("/", apiRouter)
-server.use("/", messagesRouter)
+server.use(messagesRouter)
 server.listen(PORT, () => {
     console.log(`Hideir REST API listening @ http://localhost:${PORT}`)
 })
+io.listen(port)
+server.locals.io = io

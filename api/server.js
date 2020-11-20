@@ -8,7 +8,7 @@ const path = require("path")
 const cors = require("cors")
 const server = express()
 const jwt = require("jsonwebtoken")
-const io = require("socket.io")
+const io = require("socket.io")(server)
 const messagesRoute = require("../src/routes/messages.js")
 const { hashSync, compareSync } = require("bcryptjs") // bcrypt will encrypt passwords to be saved in db
 const { port, secret } = require("../config.js")
@@ -236,5 +236,5 @@ function authenticateToken(req, res, next) {
 }
 
 server.listen(port)
-io.listen(server)
+io.listen(port)
 server.locals.io = io

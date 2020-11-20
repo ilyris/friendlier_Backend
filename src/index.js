@@ -25,6 +25,6 @@ server.use(messagesRouter)
 server.listen(PORT, () => {
     console.log(`Hideir REST API listening @ http://localhost:${PORT}`)
 })
-const io = require("socket.io")(server)
-io.listen(port)
+const io = require("socket.io").listen(server)
+// io.listen(port)
 server.locals.io = io

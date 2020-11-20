@@ -5,16 +5,15 @@ const { PORT } = require("./config")
 const apiRouter = require("./routes")
 
 const server = express()
-const httpServer = require('http').createServer(server)
-const io = require('socket.io')(httpServer)
+const io = require("socket.io")(server)
 
-httpServer.use(cors())
+server.use(cors())
 
-httpServer.use(express.json()) // use middleware to parse the request body to a JSON object so we can access the data.
-httpServer.use("/", apiRouter) // TRhis can be split into a ton of sub-routes
-io.on('connection', socket => {
-    console.log('connect');
-  });
-httpServer.listen(PORT, () => {
+server.use(express.json()) // use middleware to parse the request body to a JSON object so we can access the data.
+server.use("/", apiRouter) // TRhis can be split into a ton of sub-routes
+io.on("connection", (socket) => {
+    console.log("connect")
+})
+server.listen(PORT, () => {
     console.log(`Hideir REST API listening @ http://localhost:${PORT}`)
 })

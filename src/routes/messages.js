@@ -6,13 +6,12 @@ const router = Router()
 // const { hashSync, compareSync } = require("bcryptjs") // bcrypt will encrypt passwords to be saved in db
 // const { JWT_SECRET } = require("../config.js")
 
-
-router.get('/messages', (req, res, next) => {
+router.get("/messages", (req, res, next) => {
     console.log(req.app.locals.io) //io object
     const io = req.app.locals.io
-    io.emit('my event', { my: 'data' }) //emit to everyone
+    io.emit("my event", { my: "data" }) //emit to everyone
     res.send("OK")
-});
+})
 
 // io.on("connection", () => {
 //     console.log('a user connected');

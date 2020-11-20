@@ -8,6 +8,8 @@ const path = require("path")
 const cors = require("cors")
 const server = express()
 const jwt = require("jsonwebtoken")
+const io = require('socket.io')(server)
+const messagesRoute = require('../src/routes/messages.js')
 const { hashSync, compareSync } = require("bcryptjs") // bcrypt will encrypt passwords to be saved in db
 const { port, secret } = require("../config.js")
 const {
@@ -30,7 +32,7 @@ server.use(express.json()) // use middleware to parse the request body to a JSON
 server.get("/", (req, res) => {
     res.json({ interestsArray })
 })
-
+server.use(messagesRoute)
 server.get("/loggedInUser", authenticateToken, async (req, res, next) => {
     // Deconstruct emailAddr from user
     const { emailAddr } = res.locals.user
@@ -234,3 +236,4 @@ function authenticateToken(req, res, next) {
 }
 
 server.listen(port)
+server.locals.io = io

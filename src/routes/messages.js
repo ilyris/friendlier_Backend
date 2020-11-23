@@ -1,15 +1,21 @@
-// const { Router } = require("express")
-// const router = Router()
+var express = require('express');
+var http = require('http');
+var router = express.Router();
+var socketio = require('socket.io');
 
-// // const jwt = require("jsonwebtoken")
-// // const { hashSync, compareSync } = require("bcryptjs") // bcrypt will encrypt passwords to be saved in db
-// // const { JWT_SECRET } = require("../config.js")
+var app = express();
+var server = http.Server(app);
+var websocket = socketio(server);
+server.listen(8081, () => console.log('Socket.io listening on *:8081'));
 
-// router.get("/messages", (req, res, next) => {
-//     console.log(req.app.locals.io) //io object
-//     const io = req.app.locals.io
-//     io.emit("my event", { my: "data" }) //emit to everyone
-//     res.send("OK")
-// })
+// The event will be called when a client is connected.
+websocket.on('connection', socket => {
+    console.log('connection');
+    socket.emit('hello', {data: 'more data'});
 
-// module.exports = router
+    socket.on('disconnect', () => {
+        console.log('user left')
+    })
+})
+
+module.exports = router;

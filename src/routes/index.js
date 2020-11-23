@@ -16,6 +16,11 @@ const { interestsArray } = require("../utils/interestData")
 
 const router = Router()
 
+router.get("/", (req, res) => {
+
+    res.json({ interestsArray })
+})
+
 router.get("/loggedInUser", authenticateToken, async (req, res, next) => {
     // Deconstruct emailAddr from user
     const { emailAddr, username } = res.locals.user
@@ -214,9 +219,7 @@ router.post(`/signin`, async (req, res, next) => {
     }
 })
 
-router.get("/", (req, res) => {
-    res.json({ interestsArray })
-})
+
 
 function generateToken(user) {
     const payload = {

@@ -10,10 +10,12 @@ const server = http.createServer(app)
 
 const messagesRouter = require("./routes/messages")
 
-app.use(cors({
-    origin: "https://hideir.herokuapp.com:8081",
-    credentials: true
-}))
+app.use(
+    cors({
+        origin: "https://hideir.herokuapp.com:8081",
+        credentials: true
+    })
+)
 app.use(express.json()) // use middleware to parse the request body to a JSON object so we can access the data.
 app.use("/", apiRouter) // This can be split into a ton of sub-routes
 

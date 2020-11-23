@@ -1,4 +1,4 @@
-const { SOCKETPORT } = require("./config")
+const { SOCKETPORT } = require("../config")
 var express = require("express")
 var http = require("https")
 var router = express.Router()

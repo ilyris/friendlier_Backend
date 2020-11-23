@@ -1,6 +1,7 @@
 const { PORT } = require("../config")
-var app = require("express")()
-var router = app.Router()
+var express = require("express")
+var app = express()
+var router = express.Router()
 const server = require("https").createServer(app)
 const io = require("socket.io")(server, {
     cors: {

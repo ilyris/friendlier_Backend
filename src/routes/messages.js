@@ -1,10 +1,10 @@
 var express = require("express")
-var https = require("https")
+var http = require("http")
 var router = express.Router()
 var socketio = require("socket.io")
 
 var app = express()
-var server = https.Server(app)
+var server = http.Server(app)
 var websocket = socketio(server)
 server.listen(8081, () => console.log("Socket.io listening on *:8081"))
 

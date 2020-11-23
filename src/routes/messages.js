@@ -5,11 +5,7 @@ var socketio = require("socket.io")
 
 var app = express()
 var server = https.Server(app)
-var websocket = socketio(server, {
-    cors: {
-      origin: '*',
-    }
-  })
+var websocket = socketio(server, { origins: '*:*'})
 server.listen(8081, () => console.log("Socket.io listening on *:8081"))
 
 // The event will be called when a client is connected.

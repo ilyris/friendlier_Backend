@@ -5,7 +5,17 @@ var socketio = require("socket.io")
 
 var app = express()
 var server = https.Server(app)
-var websocket = socketio(server, { origins: '*:*'})
+var websocket = socketio(server, {
+    handlePreflightRequest: (req, res) => {
+        const headers = {
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
+            "Access-Control-Allow-Credentials": true
+        };
+        res.writeHead(200, headers);
+        res.end();
+    }
+})
 server.listen(8081, () => console.log("Socket.io listening on *:8081"))
 
 // The event will be called when a client is connected.

@@ -17,7 +17,6 @@ const { interestsArray } = require("../utils/interestData")
 const router = Router()
 
 router.get("/", (req, res) => {
-
     res.json({ interestsArray })
 })
 
@@ -218,8 +217,6 @@ router.post(`/signin`, async (req, res, next) => {
         next(error)
     }
 })
-
-
 
 function generateToken(user) {
     const payload = {

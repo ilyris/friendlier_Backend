@@ -1,16 +1,16 @@
 var express = require("express")
-var https = require("https")
+var http = require("http")
 var router = express.Router()
 var socketio = require("socket.io")
 
 var app = express()
-var server = https.Server(app)
+var server = http.Server(app)
 var websocket = socketio(server, {
     cors: {
-      origin: "https://hideir.netlify.app",
-      methods: ["GET", "POST"]
+        origin: "https://hideir.netlify.app",
+        methods: ["GET", "POST"]
     }
-  })
+})
 server.listen(8081, () => console.log("Socket.io listening on *:8081"))
 
 // The event will be called when a client is connected.

@@ -1,11 +1,11 @@
 // ************* This is the main server file  ***********
 const express = require("express")
-const http = require("http")
+// const http = require("http")
 const cors = require("cors")
 const { PORT } = require("./config")
 const apiRouter = require("./routes")
 const app = express()
-const server = http.createServer(app)
+// const server = http.createServer(app)
 // const socketio = require("socket.io").listen(server)
 
 const messagesRouter = require("./routes/messages")

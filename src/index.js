@@ -15,7 +15,7 @@ app.use(express.json()) // use middleware to parse the request body to a JSON ob
 app.use("/", apiRouter) // This can be split into a ton of sub-routes
 
 // Socket IO connection on port 8081
-app.use("/", messagesRouter)
+app.use("/messages", messagesRouter)
 
 app.listen(PORT, () => {
     console.log(`Hideir REST API listening @ http://localhost:${PORT}`)

@@ -1,4 +1,4 @@
-const { SOCKETPORT } = require("../config")
+const { PORT } = require("../config")
 var express = require("express")
 var http = require("https")
 var router = express.Router()
@@ -12,7 +12,7 @@ var websocket = socketio(server, {
         methods: ["GET", "POST"]
     }
 })
-server.listen(SOCKETPORT, () => console.log(`Socket.io listening on ${SOCKETPORT}`))
+server.listen(SOCKETPORT, () => console.log(`Socket.io listening on ${PORT}`))
 
 // The event will be called when a client is connected.
 websocket.on("connection", (socket) => {

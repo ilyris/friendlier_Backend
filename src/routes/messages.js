@@ -12,7 +12,7 @@ var websocket = socketio(server, {
         methods: ["GET", "POST"]
     }
 })
-server.listen(SOCKETPORT, () => console.log(`Socket.io listening on ${PORT}`))
+server.listen(PORT, () => console.log(`Socket.io listening on ${PORT}`))
 
 // The event will be called when a client is connected.
 websocket.on("connection", (socket) => {

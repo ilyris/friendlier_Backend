@@ -1,22 +1,23 @@
-const express = require('express');
-const socketIO = require("socket.io");
-const http = require('http');
+const express = require("express")
+const socketIO = require("socket.io")
+const http = require("https")
 
-let app = express();
-let router = express.Router();
-let server = http.createServer(app);
+let app = express()
+let router = express.Router()
+let server = http.createServer(app)
 
 // The event will be called when a client is connected.
 let io = socketIO(server, {
+    transports: ['websocket'],
     cors: {
-      origin: "http://localhost:3000",
-      methods: ["GET", "POST"],
-      allowedHeaders: ["my-custom-header"],
-      credentials: true
+        origin: ["http://localhost:3000", "https://hideir.netlify.app"],
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
     }
-  })
+})
 
-io.on("connection", socket => {
+io.on("connection", (socket) => {
     console.log("connection")
     socket.emit("hello", { data: "more data" })
 
@@ -25,6 +26,6 @@ io.on("connection", socket => {
     })
 })
 
-server.listen(8081, () => console.log('Socket.io listening on *:8081'));
+server.listen(8081, () => console.log("Socket.io listening on *:8081"))
 
-module.exports = router;
+module.exports = router

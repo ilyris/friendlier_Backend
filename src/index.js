@@ -4,8 +4,8 @@ const cors = require("cors")
 const { PORT } = require("./config")
 const apiRouter = require("./routes")
 const app = express()
-const http = require('http')
-const socketio = require('socket.io')
+const http = require("http")
+const socketio = require("socket.io")
 const server = http.createServer(app)
 const websocket = socketio(server)
 
@@ -16,15 +16,16 @@ app.use(express.json()) // use middleware to parse the request body to a JSON ob
 app.use("/", apiRouter) // This can be split into a ton of sub-routes
 
 // // The event will be called when a client is connected.
-websocket.on('connection', socket => {
-    console.log('connection');
-    socket.emit('hello', {data: 'more data'});
+websocket.on("connection", (socket) => {
+    console.log("connection")
+    socket.emit("hello", { data: "more data" })
 
-    socket.on('disconnect', () => {
-        console.log('user left')
+    socket.on("disconnect", () => {
+        console.log("user left")
     })
 })
 
 app.listen(PORT, () => {
     console.log(`Hideir REST API listening @ http://localhost:${PORT}`)
 })
+server.listen(8081);

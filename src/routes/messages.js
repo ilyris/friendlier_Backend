@@ -8,7 +8,6 @@ let server = http.createServer(app)
 
 // The event will be called when a client is connected.
 let io = socketIO(server, {
-    transports: ['websocket'],
     cors: {
         origin: ["http://localhost:3000", "https://hideir.netlify.app"],
         methods: ["GET", "POST"],

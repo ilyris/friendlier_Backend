@@ -25,6 +25,6 @@ io.on("connection", (socket) => {
     })
 })
 
-server.listen(8081, () => console.log("Socket.io listening on *:8081"))
+server.listen(80, () => console.log("Socket.io listening on *:80"))
 
 module.exports = router
